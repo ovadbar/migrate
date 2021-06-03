@@ -1,6 +1,7 @@
 package stub
 
 import (
+	"errors"
 	"io"
 	"io/ioutil"
 	"reflect"
@@ -83,6 +84,9 @@ func (s *Stub) Version() (version int, dirty bool, err error) {
 
 const DROP = "DROP"
 
+func (s *Stub) Empty() (err error) {
+	return errors.New("Empty not availble for Stub")
+}
 func (s *Stub) Drop() error {
 	s.CurrentVersion = database.NilVersion
 	s.LastRunMigration = nil

@@ -440,6 +440,56 @@ func (p *Postgres) Drop() (err error) {
 	return nil
 }
 
+func (p *Postgres) getTables() ([]string, error) {
+	query := `SELECT table_name FROM information_schema.tables WHERE table_schema=(SELECT current_schema()) AND table_type='BASE TABLE'`
+	tables, err := p.conn.QueryContext(context.Background(), query)
+	if err != nil {
+		return nil, &database.Error{OrigErr: err, Query: []byte(query)}
+	}
+	defer func() {
+		if errClose := tables.Close(); errClose != nil {
+			err = multierror.Append(err, errClose)
+		}
+	}()
+
+	// delete one table after another
+	tableNames := make([]string, 0)
+	for tables.Next() {
+		var tableName string
+		if err := tables.Scan(&tableName); err != nil {
+			return nil, err
+		}
+		if len(tableName) > 0 {
+			tableNames = append(tableNames, tableName)
+		}
+	}
+	if err := tables.Err(); err != nil {
+		return nil, &database.Error{OrigErr: err, Query: []byte(query)}
+	}
+	return tableNames, nil
+}
+
+func (p *Postgres) Empty() (err error) {
+	// select all tables in current schema
+	tableNames, err := p.getTables()
+	if err != nil {
+		return err
+	}
+	if len(tableNames) > 0 {
+		// delete one by one ...
+		for _, t := range tableNames {
+			if t == "schema_migrations" {
+				continue
+			}
+			query := `TRUNCATE ` + pq.QuoteIdentifier(t) + ` CASCADE`
+			if _, err := p.conn.ExecContext(context.Background(), query); err != nil {
+				return &database.Error{OrigErr: err, Query: []byte(query)}
+			}
+		}
+	}
+	return nil
+}
+
 // ensureVersionTable checks if versions table exists and, if not, creates it.
 // Note that this function locks the database, which deviates from the usual
 // convention of "caller locks" in the Postgres type.

@@ -2,6 +2,7 @@ package clickhouse
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -226,6 +227,10 @@ func (ch *ClickHouse) ensureVersionTable() (err error) {
 		return &database.Error{OrigErr: err, Query: []byte(query)}
 	}
 	return nil
+}
+
+func (ch *ClickHouse) Empty() error {
+	return errors.New("Empty Not yet done for ClickHouse")
 }
 
 func (ch *ClickHouse) Drop() (err error) {

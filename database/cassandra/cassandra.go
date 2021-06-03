@@ -263,6 +263,10 @@ func (c *Cassandra) Version() (version int, dirty bool, err error) {
 	}
 }
 
+func (c *Cassandra) Empty() error {
+	return errors.New("Empty Not yet done for Cassandra")
+}
+
 func (c *Cassandra) Drop() error {
 	// select all tables in current schema
 	query := fmt.Sprintf(`SELECT table_name from system_schema.tables WHERE keyspace_name='%s'`, c.config.KeyspaceName)

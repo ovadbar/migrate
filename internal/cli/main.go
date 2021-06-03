@@ -31,6 +31,8 @@ const (
 	Use -f to bypass confirmation
 	Use -all to apply all down migrations`
 	forceUsage = `force V      Set version V but don't run migration (ignores dirty state)`
+	emptyUsage = `drop [-f] Drop everything inside database
+	Use -f to bypass confirmation`
 )
 
 func handleSubCmdHelp(help bool, usage string, flagSet *flag.FlagSet) {
@@ -91,10 +93,11 @@ Commands:
   %s
   %s
   %s
+  %s
   version      Print current migration version
 
 Source drivers: `+strings.Join(source.List(), ", ")+`
-Database drivers: `+strings.Join(database.List(), ", ")+"\n", createUsage, gotoUsage, upUsage, downUsage, dropUsage, forceUsage)
+Database drivers: `+strings.Join(database.List(), ", ")+"\n", createUsage, gotoUsage, upUsage, downUsage, dropUsage, forceUsage, emptyUsage)
 	}
 
 	flag.Parse()
@@ -321,6 +324,40 @@ Database drivers: `+strings.Join(database.List(), ", ")+"\n", createUsage, gotoU
 		}
 
 		if err := dropCmd(migrater); err != nil {
+			log.fatalErr(err)
+		}
+
+		if log.verbose {
+			log.Println("Finished after", time.Since(startTime))
+		}
+	case "empty":
+		emptyFlagSet, help := newFlagSetWithHelp("empty")
+		forceEmpty := emptyFlagSet.Bool("f", false, "Force the drop command by bypassing the confirmation prompt")
+
+		if err := emptyFlagSet.Parse(args); err != nil {
+			log.fatalErr(err)
+		}
+
+		handleSubCmdHelp(*help, emptyUsage, emptyFlagSet)
+
+		if !*forceEmpty {
+			log.Println("Are you sure you want to empty all tables? [y/N]")
+			var response string
+			fmt.Scanln(&response)
+			response = strings.ToLower(strings.TrimSpace(response))
+
+			if response == "y" {
+				log.Println("Truncating all the database tables")
+			} else {
+				log.fatal("Aborted dropping the entire database schema")
+			}
+		}
+
+		if migraterErr != nil {
+			log.fatalErr(migraterErr)
+		}
+
+		if err := emptyCmd(migrater); err != nil {
 			log.fatalErr(err)
 		}
 

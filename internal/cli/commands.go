@@ -201,6 +201,12 @@ func dropCmd(m *migrate.Migrate) error {
 	}
 	return nil
 }
+func emptyCmd(m *migrate.Migrate) error {
+	if err := m.Empty(); err != nil {
+		return err
+	}
+	return nil
+}
 
 func forceCmd(m *migrate.Migrate, v int) error {
 	if err := m.Force(v); err != nil {

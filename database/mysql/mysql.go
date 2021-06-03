@@ -7,21 +7,17 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	nurl "net/url"
 	"strconv"
 	"strings"
-)
 
-import (
 	"github.com/go-sql-driver/mysql"
-	"github.com/hashicorp/go-multierror"
-)
-
-import (
 	"github.com/golang-migrate/migrate/v4/database"
+	"github.com/hashicorp/go-multierror"
 )
 
 func init() {
@@ -377,6 +373,9 @@ func (m *Mysql) Version() (version int, dirty bool, err error) {
 	}
 }
 
+func (m *Mysql) Empty() (err error) {
+	return errors.New("Empty not availble for Mysql")
+}
 func (m *Mysql) Drop() (err error) {
 	// select all tables
 	query := `SHOW TABLES LIKE '%'`

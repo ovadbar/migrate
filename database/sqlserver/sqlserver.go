@@ -3,6 +3,7 @@ package sqlserver
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -281,6 +282,9 @@ func (ss *SQLServer) Version() (version int, dirty bool, err error) {
 }
 
 // Drop all tables from the database.
+func (ss *SQLServer) Empty() (err error) {
+	return errors.New("Empty not availble for SQLServer")
+}
 func (ss *SQLServer) Drop() error {
 
 	// drop all referential integrity constraints

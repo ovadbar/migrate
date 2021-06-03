@@ -3,6 +3,7 @@ package snowflake
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -294,6 +295,9 @@ func (p *Snowflake) Version() (version int, dirty bool, err error) {
 	}
 }
 
+func (m *Snowflake) Empty() (err error) {
+	return errors.New("Empty not availble for Snowflake")
+}
 func (p *Snowflake) Drop() (err error) {
 	// select all tables in current schema
 	query := `SELECT table_name FROM information_schema.tables WHERE table_schema=(SELECT current_schema()) AND table_type='BASE TABLE'`

@@ -132,6 +132,9 @@ func (m *Sqlite) Close() error {
 	return m.db.Close()
 }
 
+func (m *Sqlite) Empty() (err error) {
+	return errors.New("Empty not availble for Sqlite")
+}
 func (m *Sqlite) Drop() (err error) {
 	query := `SELECT name FROM sqlite_master WHERE type = 'table';`
 	tables, err := m.db.Query(query)

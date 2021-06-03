@@ -316,6 +316,16 @@ func (m *Migrate) Drop() error {
 	return m.unlock()
 }
 
+func (m *Migrate) Empty() error {
+	if err := m.lock(); err != nil {
+		return err
+	}
+	if err := m.databaseDrv.Empty(); err != nil {
+		return m.unlockErr(err)
+	}
+	return m.unlock()
+}
+
 // Run runs any migration provided by you against the database.
 // It does not check any currently active version in database.
 // Usually you don't need this function at all. Use Migrate,

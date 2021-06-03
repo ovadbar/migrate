@@ -2,6 +2,7 @@ package neo4j
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -253,6 +254,10 @@ ORDER BY COALESCE(sm.ts, datetime({year: 0})) DESC, sm.version DESC LIMIT 1`,
 	}
 	mr := result.(MigrationRecord)
 	return mr.Version, mr.Dirty, err
+}
+
+func (n *Neo4j) Empty() (err error) {
+	return errors.New("Empty not availble for Neo4j")
 }
 
 func (n *Neo4j) Drop() (err error) {

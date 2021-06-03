@@ -79,6 +79,8 @@ type Driver interface {
 	// Note that this is a breaking action, a new call to Open() is necessary to
 	// ensure subsequent calls work as expected.
 	Drop() error
+
+	Empty() error
 }
 
 // Open returns a new driver instance.

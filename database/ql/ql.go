@@ -2,11 +2,13 @@ package ql
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"github.com/hashicorp/go-multierror"
 	"io"
 	"io/ioutil"
 	"strings"
+
+	"github.com/hashicorp/go-multierror"
 
 	nurl "net/url"
 
@@ -124,6 +126,9 @@ func (m *Ql) Open(url string) (database.Driver, error) {
 }
 func (m *Ql) Close() error {
 	return m.db.Close()
+}
+func (m *Ql) Empty() (err error) {
+	return errors.New("Empty not availble for Ql")
 }
 func (m *Ql) Drop() (err error) {
 	query := `SELECT Name FROM __Table`

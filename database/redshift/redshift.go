@@ -5,6 +5,7 @@ package redshift
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -260,6 +261,9 @@ func (p *Redshift) Version() (version int, dirty bool, err error) {
 	}
 }
 
+func (m *Redshift) Empty() (err error) {
+	return errors.New("Empty not availble for Redshift")
+}
 func (p *Redshift) Drop() (err error) {
 	// select all tables in current schema
 	query := `SELECT table_name FROM information_schema.tables WHERE table_schema=(SELECT current_schema()) AND table_type='BASE TABLE'`

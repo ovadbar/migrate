@@ -2,7 +2,15 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/url"
+	os "os"
+	"strconv"
+	"time"
+
 	"github.com/cenkalti/backoff/v4"
 	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/hashicorp/go-multierror"
@@ -10,12 +18,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/x/mongo/driver/connstring"
-	"io"
-	"io/ioutil"
-	"net/url"
-	os "os"
-	"strconv"
-	"time"
 )
 
 func init() {
@@ -277,6 +279,10 @@ func (m *Mongo) executeCommands(ctx context.Context, cmds []bson.D) error {
 
 func (m *Mongo) Close() error {
 	return m.client.Disconnect(context.TODO())
+}
+
+func (m *Mongo) Empty() error {
+	return errors.New("Empty Not yet done for Mongo")
 }
 
 func (m *Mongo) Drop() error {

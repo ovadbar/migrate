@@ -3,23 +3,19 @@ package cockroachdb
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	nurl "net/url"
 	"regexp"
 	"strconv"
-)
 
-import (
 	"github.com/cockroachdb/cockroach-go/crdb"
-	"github.com/hashicorp/go-multierror"
-	"github.com/lib/pq"
-)
-
-import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database"
+	"github.com/hashicorp/go-multierror"
+	"github.com/lib/pq"
 )
 
 func init() {
@@ -274,6 +270,10 @@ func (c *CockroachDb) Version() (version int, dirty bool, err error) {
 	default:
 		return version, dirty, nil
 	}
+}
+
+func (c *CockroachDb) Empty() error {
+	return errors.New("Empty Not yet done for CockroachDb")
 }
 
 func (c *CockroachDb) Drop() (err error) {

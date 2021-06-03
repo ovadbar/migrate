@@ -257,6 +257,9 @@ var nameMatcher = regexp.MustCompile(`(CREATE TABLE\s(\S+)\s)|(CREATE.+INDEX\s(\
 // provided in the schema. Assuming the schema describes how the database can
 // be "build up", it seems logical to "unbuild" the database simply by going the
 // opposite direction. More testing
+func (m *Spanner) Empty() (err error) {
+	return errors.New("Empty not availble for Spanner")
+}
 func (s *Spanner) Drop() error {
 	ctx := context.Background()
 	res, err := s.db.admin.GetDatabaseDdl(ctx, &adminpb.GetDatabaseDdlRequest{

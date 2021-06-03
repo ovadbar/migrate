@@ -5,14 +5,16 @@ package firebird
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	nurl "net/url"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/hashicorp/go-multierror"
 	_ "github.com/nakagami/firebirdsql"
-	"io"
-	"io/ioutil"
-	nurl "net/url"
 )
 
 func init() {
@@ -167,6 +169,10 @@ func (f *Firebird) Version() (version int, dirty bool, err error) {
 	default:
 		return version, itob(d), nil
 	}
+}
+
+func (f *Firebird) Empty() error {
+	return errors.New("Empty Not yet done for Firebird")
 }
 
 func (f *Firebird) Drop() (err error) {
