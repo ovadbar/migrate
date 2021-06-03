@@ -478,7 +478,7 @@ func (p *Postgres) Empty() (err error) {
 	if len(tableNames) > 0 {
 		// delete one by one ...
 		for _, t := range tableNames {
-			if t == "schema_migrations" {
+			if t == p.config.MigrationsTable {
 				continue
 			}
 			query := `TRUNCATE ` + pq.QuoteIdentifier(t) + ` CASCADE`
